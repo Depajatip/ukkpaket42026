@@ -6,7 +6,7 @@
         <div class="col-md-5">
             <div class="card shadow-sm">
                 <div class="card-header text-center fw-bold">
-                    Login Perpustakaan
+                    Login Perpustakaan by Depa
                 </div>
 
                 <div class="card-body">
@@ -71,20 +71,14 @@
                             <button type="submit" class="btn btn-primary">
                                 Login
                             </button>
-
-                            @if (Route::has('password.request'))
-                                <a class="text-decoration-none" href="{{ route('password.request') }}">
-                                    Lupa password?
-                                </a>
-                            @endif
                         </div>
                     </form>
                 </div>
 
                 <div class="card-footer text-center">
                     <small>
-                        Belum punya akun?
-                        <a href="{{ route('register') }}">Daftar</a>
+                        Akun disediakan oleh admin perpustakaan.
+                        <!-- <a href="{{ route('register') }}">Daftar</a> -->
                     </small>
                 </div>
             </div>

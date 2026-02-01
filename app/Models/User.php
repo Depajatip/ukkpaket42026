@@ -19,12 +19,15 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'nama_siswa',
-        'email',
         'password',
         'nis',
         'kelas',
         'email',
     ];
+public function anggota()
+{
+    return $this->hasOne(Anggota::class, 'nis', 'nis');
+}
 
     /**
      * The attributes that should be hidden for serialization.

@@ -16,4 +16,8 @@ class RoleMiddleware
 
         return $next($request);
     }
+    protected function authenticated(Request $request, $user)
+{
+    return redirect('/dashboard');
+}
 }
