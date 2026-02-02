@@ -46,53 +46,95 @@
     </div>
 
     {{-- Action Area --}}
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
+<div class="card shadow-sm border-0">
+    <div class="card-body">
 
-            @if(!auth()->user()->anggota)
-                <div class="alert alert-warning">
-                    📌 Kamu belum terdaftar sebagai anggota perpustakaan.
+        @if(!auth()->user()->anggota)
+            {{-- BELUM ANGGOTA --}}
+            <div class="alert alert-warning d-flex align-items-center">
+                <span class="me-2 fs-4">📌</span>
+                <div>
+                    Kamu belum terdaftar sebagai anggota perpustakaan.
+                    <br>
+                    <small>Daftar dulu untuk bisa meminjam buku.</small>
                 </div>
+            </div>
 
-                <div class="text-center">
-                    <a href="/daftar-anggota" class="btn btn-primary px-4">
-                        📖 Daftar Anggota
-                    </a>
+            <div class="text-center mt-3">
+                <a href="{{ route('anggota.create') }}"
+                   class="btn btn-primary btn-lg px-4">
+                    📖 Daftar Anggota Perpustakaan
+                </a>
+            </div>
+
+            {{-- Tombol dikunci --}}
+            <div class="row g-3 mt-4">
+                <div class="col-md-6">
+                    <button class="btn btn-outline-secondary w-100" disabled>
+                        📚 Lihat Buku (Khusus Anggota)
+                    </button>
                 </div>
-            @else
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="card border-0 bg-light h-100">
-                            <div class="card-body">
-                                <h6 class="fw-bold">📚 Peminjaman Aktif</h6>
-                                <p class="mb-2 text-muted">
-                                    Lihat buku yang sedang kamu pinjam
-                                </p>
-                                <a href="/peminjaman" class="btn btn-outline-primary btn-sm">
-                                    Lihat Peminjaman
-                                </a>
-                            </div>
+                <div class="col-md-6">
+                    <button class="btn btn-outline-secondary w-100" disabled>
+                        🔄 Peminjaman (Khusus Anggota)
+                    </button>
+                </div>
+            </div>
+
+        @else
+            {{-- SUDAH ANGGOTA --}}
+            <div class="alert alert-success text-center">
+                🎉 Kamu sudah terdaftar sebagai anggota perpustakaan
+            </div>
+
+            <div class="row g-3 mt-3">
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">📚 Lihat Buku</h6>
+                            <p class="text-muted small">
+                                Jelajahi koleksi buku perpustakaan
+                            </p>
+                            <a href="/buku" class="btn btn-primary btn-sm">
+                                Lihat Buku
+                            </a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-md-6">
-                        <div class="card border-0 bg-light h-100">
-                            <div class="card-body">
-                                <h6 class="fw-bold">📜 Riwayat</h6>
-                                <p class="mb-2 text-muted">
-                                    Riwayat peminjaman buku
-                                </p>
-                                <a href="/riwayat-peminjaman" class="btn btn-outline-secondary btn-sm">
-                                    Lihat Riwayat
-                                </a>
-                            </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">🔄 Peminjaman Aktif</h6>
+                            <p class="text-muted small">
+                                Buku yang sedang kamu pinjam
+                            </p>
+                            <a href="/peminjaman" class="btn btn-outline-primary btn-sm">
+                                Lihat Peminjaman
+                            </a>
                         </div>
                     </div>
                 </div>
-            @endif
 
-        </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold">📜 Riwayat</h6>
+                            <p class="text-muted small">
+                                Riwayat peminjaman buku
+                            </p>
+                            <a href="/riwayat-peminjaman" class="btn btn-outline-secondary btn-sm">
+                                Lihat Riwayat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </div>
+</div>
+
 
 </div>
 @endsection

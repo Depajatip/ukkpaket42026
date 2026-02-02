@@ -1,53 +1,86 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnggotaController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Admin\BukuController;
+use App\Http\Controllers\Admin\TransaksiController as AdminTransaksiController;
+use App\Http\Controllers\BukuSiswaController;
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/daftar-anggota', [AnggotaController::class, 'create'])
-        ->name('anggota.create');
-
-    Route::post('/daftar-anggota', [AnggotaController::class, 'store'])
-        ->name('anggota.store');
-});
-
-// DASHBOARD USER
+/*
+|--------------------------------------------------------------------------
+| AUTH USER
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', 'role:user'])->group(function () {
+
     Route::get('/dashboard', function () {
         return view('user.dashboard');
     })->name('user.dashboard');
 
+    Route::get('/buku', [BukuSiswaController::class, 'index'])
+        ->name('buku.index');
+
+    Route::post('/pinjam/{buku}', [PeminjamanController::class, 'store'])
+        ->name('pinjam.store');
+
     Route::get('/daftar-anggota', [AnggotaController::class, 'create'])
         ->name('anggota.create');
 
     Route::post('/daftar-anggota', [AnggotaController::class, 'store'])
         ->name('anggota.store');
+
+    Route::post(
+        '/pengembalian/{transaksi}',
+        [PeminjamanController::class, 'ajukanPengembalian']
+    )->name('pengembalian.ajukan');
 });
 
-// DASHBOARD ADMIN
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-});
+/*
+|--------------------------------------------------------------------------
+| AUTH ADMIN
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-// LOGIN ADMIN
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        Route::resource('buku', BukuController::class);
+
+        Route::get('/transaksi', [AdminTransaksiController::class, 'index'])
+            ->name('transaksi.index');
+
+        Route::post('/transaksi/{transaksi}/approve', [AdminTransaksiController::class, 'approve'])
+            ->name('transaksi.approve');
+
+        Route::post('/transaksi/{transaksi}/reject', [AdminTransaksiController::class, 'reject'])
+            ->name('transaksi.reject');
+        Route::post('/transaksi/{transaksi}/return', [AdminTransaksiController::class, 'return'])
+            ->name('transaksi.return');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| LOGIN ADMIN
+|--------------------------------------------------------------------------
+*/
 Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])
     ->middleware('guest')
     ->name('admin.login');
@@ -58,5 +91,4 @@ Route::post('/admin/login', [AdminLoginController::class, 'login'])
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])
     ->middleware('auth');
 
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

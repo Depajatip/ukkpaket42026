@@ -36,12 +36,12 @@
             </li>
         @endif
 
-        {{-- MENU ADMIN --}}
+        <!-- {{-- MENU ADMIN --}}
         @if(auth()->user()->role === 'admin')
             <li class="nav-item">
                 <a class="nav-link" href="/admin/dashboard">Dashboard Admin</a>
             </li>
-        @endif
+        @endif -->
 
         <li class="nav-item">
             <form method="POST" action="{{ route('logout') }}">
