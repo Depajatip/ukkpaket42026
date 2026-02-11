@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\BukuController;
 use App\Http\Controllers\Admin\TransaksiController as AdminTransaksiController;
 use App\Http\Controllers\BukuSiswaController;
+use App\Http\Controllers\ListPinjamanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,9 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 
     Route::post('/daftar-anggota', [AnggotaController::class, 'store'])
         ->name('anggota.store');
+
+    Route::get('/list-pinjaman', [ListPinjamanController::class, 'index'])
+    ->name('buku.listpinjaman');
 
     Route::post(
         '/pengembalian/{transaksi}',

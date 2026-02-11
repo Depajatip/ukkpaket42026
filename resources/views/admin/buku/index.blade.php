@@ -20,7 +20,8 @@
         <table class="table table-hover">
             <thead class="table-light">
                 <tr>
-                    <th>#</th>
+                    <th>No</th>
+                    <th>Sampul</th>
                     <th>Judul</th>
                     <th>Penulis</th>
                     <th>Stok</th>

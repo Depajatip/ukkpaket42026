@@ -109,7 +109,7 @@
                             <p class="text-muted small">
                                 Buku yang sedang kamu pinjam
                             </p>
-                            <a href="/peminjaman" class="btn btn-outline-primary btn-sm">
+                            <a href="/list-pinjaman" class="btn btn-outline-primary btn-sm">
                                 Lihat Peminjaman
                             </a>
                         </div>
