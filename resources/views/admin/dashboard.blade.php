@@ -36,15 +36,6 @@
         </div>
     </div>
 
-    {{-- TERLAMBAT --}}
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <small class="text-muted">Terlambat</small>
-                <h3 class="fw-bold mt-2 text-danger">3</h3>
-            </div>
-        </div>
-    </div>
 
 </div>
 

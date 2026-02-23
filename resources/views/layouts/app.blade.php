@@ -72,6 +72,17 @@
 
     @yield('content')
     
-
+@if(session('success'))
+<script>
+window.addEventListener('load', function () {
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: @json(session('success')),
+        confirmButtonColor: '#212529'
+    });
+});
+</script>
+@endif
 </body>
 </html>

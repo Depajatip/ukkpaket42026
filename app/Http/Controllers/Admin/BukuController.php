@@ -82,23 +82,4 @@ class BukuController extends Controller
         return back()->with('success', 'Buku berhasil dihapus');
     }
 
-    public function approve(Transaksi $transaksi)
-{
-    if ($transaksi->status !== 'menunggu') {
-        return back();
-    }
-
-    if ($transaksi->buku->stok < 1) {
-        return back()->with('error', 'Stok buku habis');
-    }
-
-    $transaksi->update([
-        'status' => 'dipinjam'
-    ]);
-
-    $transaksi->buku->decrement('stok');
-
-    return back()->with('success', 'Peminjaman disetujui');
-}
-
 }

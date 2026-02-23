@@ -9,6 +9,14 @@
         <p class="text-muted">Pilih buku favoritmu dan ajukan peminjaman</p>
     </div>
 
+    {{-- Flash Message --}}
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show">
+        {{ session('error') }}
+        <button class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     {{-- Grid Buku --}}
     <div class="row g-4">
 
@@ -65,11 +73,6 @@
                             🔒 Daftar Anggota
                         </a>
                         @else
-                        <!-- <button class="btn btn-primary btn-sm w-100"
-                            {{ $item->stok == 0 ? 'disabled' : '' }}>
-                            📥 Pinjam Buku
-                        </button> -->
-
                         <form action="{{ route('pinjam.store', $item->id) }}" method="POST">
                             @csrf
                             <button type="submit"
@@ -92,7 +95,6 @@
 
     </div>
 </div>
-
 {{-- CSS Khusus --}}
 <style>
     .buku-card {

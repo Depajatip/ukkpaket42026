@@ -7,12 +7,14 @@ use App\Models\Transaksi;
 
 class ListPinjamanController extends Controller
 {
-    public function index()
-    {
-        $user = auth()->user();
-        $transaksi = Transaksi::all();
+    public function aktif()
+{
+    $transaksi = Transaksi::with('buku')
+        ->where('user_id', auth()->id())
+        ->whereIn('status', ['menunggu_pinjam', 'dipinjam', 'menunggu_pengembalian'])
+        ->latest()
+        ->get();
 
-        return view('buku.listpinjaman', compact('transaksi'));
-
-    }
+    return view('buku.listpinjaman', compact('transaksi'));
+}
 }

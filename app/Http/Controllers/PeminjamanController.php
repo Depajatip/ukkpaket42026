@@ -53,17 +53,29 @@ class PeminjamanController extends Controller
     }
 
     public function ajukanPengembalian(Transaksi $transaksi)
-{
-    if ($transaksi->user_id !== auth()->id()) abort(403);
+    {
+        if ($transaksi->user_id !== auth()->id()) {
+            abort(403);
+        }
 
-    if ($transaksi->status !== 'dipinjam') {
-        return back()->with('error', 'Status tidak valid');
+        if ($transaksi->status !== 'dipinjam') {
+            return back()->with('error', 'Transaksi tidak bisa diajukan pengembalian');
+        }
+
+        $transaksi->update([
+            'status' => 'menunggu_pengembalian'
+        ]);
+
+        return back()->with('success', 'Pengembalian diajukan, menunggu persetujuan admin');
     }
+        public function historyPinjaman()
+{
+    $history = Transaksi::with('buku')
+        ->where('user_id', auth()->id())
+        ->whereIn('status', ['dikembalikan', 'ditolak'])
+        ->latest()
+        ->get();
 
-    $transaksi->update([
-        'status' => 'menunggu_pengembalian'
-    ]);
-
-    return back()->with('success', 'Pengembalian diajukan, menunggu persetujuan admin');
+    return view('buku.history', compact('history'));
 }
 }

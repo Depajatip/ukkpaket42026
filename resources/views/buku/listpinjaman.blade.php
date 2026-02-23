@@ -1,59 +1,138 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container py-5">
 
-<div class="container my-4">
-    <div class="mb-4 text-center">
-        <h4 class="fw-bold">Daftar buku yang sedang kamu pinjam</h4>
-        <p class="text-muted">blablabal</p>
+    <h3 class="fw-bold mb-4 text-center">
+        📚 Peminjaman Aktif Saya
+    </h3>
+
+    {{-- Flash Message --}}
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show">
+        {{ session('error') }}
+        <button class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+    @endif
+
+
+    @if($transaksi->count() == 0)
+
+    <div class="text-center py-5">
+        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+            width="120"
+            class="mb-3">
+        <h5 class="text-muted">Tidak ada buku yang sedang dipinjam</h5>
+    </div>
+
+    @else
+
+<div class="row g-4">
+    @foreach($transaksi as $t)
+
+    <div class="col-md-6 col-lg-4">
+
+        <div class="card border-0 shadow-sm h-100 book-card">
+
+            {{-- Gambar --}}
+            <div class="position-relative overflow-hidden rounded-top">
+                <img src="{{ asset('storage/'.$t->buku->gambar) }}"
+                    class="img-fluid w-100 book-image">
+
+                {{-- Badge Status --}}
+                @if($t->status == 'menunggu_pinjam')
+                    <span class="badge bg-warning position-absolute top-0 end-0 m-2">
+                        ⏳ Menunggu ACC
+                    </span>
+                @elseif($t->status == 'dipinjam')
+                    <span class="badge bg-primary position-absolute top-0 end-0 m-2">
+                        📖 Sedang Dipinjam
+                    </span>
+                @elseif($t->status == 'menunggu_pengembalian')
+                    <span class="badge bg-info position-absolute top-0 end-0 m-2">
+                        🔄 Menunggu Pengembalian
+                    </span>
+                @endif
+            </div>
+
+            {{-- Body --}}
+            <div class="card-body d-flex flex-column">
+
+                <h5 class="fw-bold">
+                    {{ $t->buku->judul_buku }}
+                </h5>
+
+                <small class="text-muted mb-1">
+                    Penulis: {{ $t->buku->penulis }}
+                </small>
+
+                <small class="text-muted mb-3">
+                    Tanggal Pinjam: {{ \Carbon\Carbon::parse($t->tanggal_pinjam)->format('d M Y') }}
+                </small>
+
+                {{-- Tombol --}}
+                <div class="mt-auto pt-3">
+
+                    @if($t->status == 'dipinjam')
+                        <form action="{{ route('pengembalian.ajukan',$t->id) }}"
+                            method="POST">
+                            @csrf
+                            <button class="btn btn-outline-dark w-100 return-btn">
+                                Ajukan Pengembalian
+                            </button>
+                        </form>
+
+                    @elseif($t->status == 'menunggu_pinjam')
+                        <button class="btn btn-warning w-100 text-dark" disabled>
+                            Menunggu Persetujuan Peminjaman
+                        </button>
+                    @elseif($t->status == 'menunggu_pengembalian')
+                        <button class="btn btn-info w-100 text-dark" disabled>
+                            Menunggu Persetujuan Pengembalian
+                        </button>
+                    @endif
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    @endforeach
 </div>
 
-{{-- Grid Buku --}}
-    <div class="row g-4">
+    @endif
+</div>
 
-        @forelse($transaksi as $pinjaman)
-        <div class="col-md-3">
-            <div class="card buku-card h-100 border-0 shadow-sm">
+<style>
+    .book-card {
+        transition: all .3s ease;
+        border-radius: 16px;
+    }
 
-                {{-- Gambar --}}
-                <div class="position-relative overflow-hidden">
-                    <img
-                        src="{{ asset('storage/'.$pinjaman->gambar) }}"
-                        width="60"
-                        class="card-img-top buku-img"
-                        alt="{{ $pinjaman->judul_buku }}">
+    .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
 
-                    {{-- Overlay hover --}}
-                    <div class="buku-overlay">
-                        <span class="badge bg-dark">
-                            {{ $pinjaman->tahun_terbit }}
-                        </span>
-                    </div>
-                </div>
+    .book-image {
+        height: 220px;
+        object-fit: cover;
+        transition: transform .4s ease;
+    }
 
-                {{-- Body --}}
-                <div class="card-body d-flex flex-column">
-                    <h6 class="fw-semibold mb-1">
-                        {{ $pinjaman->status }}
-                    </h6>
+    .book-card:hover .book-image {
+        transform: scale(1.08);
+    }
 
-                    <small class="text-muted mb-2">
-                        {{ $pinjaman->penerbit }}
-                    </small>
+    .return-btn {
+        transition: all .3s ease;
+    }
 
-                    <div class="mt-auto">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        @empty
-        <div class="text-center text-muted">
-            Belum ada buku yang dipinjam 📭
-        </div>
-        @endforelse
-
-    </div>
-
+    .return-btn:hover {
+        background: #212529;
+        color: white;
+    }
+</style>
 @endsection

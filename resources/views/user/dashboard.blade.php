@@ -106,10 +106,7 @@
                     <div class="card border-0 bg-light h-100">
                         <div class="card-body text-center">
                             <h6 class="fw-bold">🔄 Peminjaman Aktif</h6>
-                            <p class="text-muted small">
-                                Buku yang sedang kamu pinjam
-                            </p>
-                            <a href="/list-pinjaman" class="btn btn-outline-primary btn-sm">
+                            <a href="{{ route('siswa.peminjaman.aktif') }}" class="btn btn-outline-primary btn-sm">
                                 Lihat Peminjaman
                             </a>
                         </div>
@@ -123,7 +120,7 @@
                             <p class="text-muted small">
                                 Riwayat peminjaman buku
                             </p>
-                            <a href="/riwayat-peminjaman" class="btn btn-outline-secondary btn-sm">
+                            <a href="{{ route('siswa.history') }}" class="btn btn-outline-secondary btn-sm">
                                 Lihat Riwayat
                             </a>
                         </div>

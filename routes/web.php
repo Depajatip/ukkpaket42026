@@ -43,13 +43,19 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/daftar-anggota', [AnggotaController::class, 'store'])
         ->name('anggota.store');
 
-    Route::get('/list-pinjaman', [ListPinjamanController::class, 'index'])
-    ->name('buku.listpinjaman');
+    Route::get('/siswa/peminjaman-aktif', [ListPinjamanController::class, 'aktif'])
+        ->name('siswa.peminjaman.aktif');
 
     Route::post(
         '/pengembalian/{transaksi}',
         [PeminjamanController::class, 'ajukanPengembalian']
     )->name('pengembalian.ajukan');
+
+    Route::get('/siswa/history', [AdminTransaksiController::class,'history'])
+    ->name('siswa.history');
+
+    Route::get('/siswa/history', [PeminjamanController::class, 'historyPinjaman'])
+    ->name('siswa.history');
 });
 
 /*
