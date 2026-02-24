@@ -51,8 +51,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         [PeminjamanController::class, 'ajukanPengembalian']
     )->name('pengembalian.ajukan');
 
-    Route::get('/siswa/history', [AdminTransaksiController::class,'history'])
-    ->name('siswa.history');
+    Route::get('/siswa/adminHistory', [AdminTransaksiController::class,'history'])
+    ->name('siswa.adminHistory');
 
     Route::get('/siswa/history', [PeminjamanController::class, 'historyPinjaman'])
     ->name('siswa.history');

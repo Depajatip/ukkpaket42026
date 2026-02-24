@@ -10,7 +10,7 @@
     {{-- Bootstrap via Vite --}}
     @vite(['resources/js/app.js'])
 </head>
-<body class="bg-light">
+<body class="bg-light" data-success="{{ session('success') }}" data-error="{{ session('error') }}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/dashboard">📚 Perpustakaan</a>
@@ -74,14 +74,15 @@
     
 @if(session('success'))
 <script>
-window.addEventListener('load', function () {
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: @json(session('success')),
-        confirmButtonColor: '#212529'
+    document.addEventListener('DOMContentLoaded', function () {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            timer: 3000,
+            showConfirmButton: false
+        });
     });
-});
 </script>
 @endif
 </body>

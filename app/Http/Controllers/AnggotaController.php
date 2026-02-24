@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Anggota;
 use Illuminate\Http\Request;
 
+
 class AnggotaController extends Controller
 {
     public function create()
@@ -30,7 +31,7 @@ class AnggotaController extends Controller
     }
 
     Anggota::create([
-        'nis'            => auth()->user()->nis,
+        'user_id' => auth()->id(),
         'no_telp'        => $request->no_telp,
         'alamat'         => $request->alamat,
         'tanggal_daftar' => now(),

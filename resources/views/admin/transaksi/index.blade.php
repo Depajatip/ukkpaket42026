@@ -20,8 +20,8 @@
                 <tbody>
                     @forelse($transaksi as $t)
                     <tr>
-                        <td>{{ $t->user->nis }}</td>
-                        <td>{{ $t->user->nama_siswa }}</td>
+                        <td>{{ $t->anggota->user->nis }}</td>
+                        <td>{{ $t->anggota->user->nama_siswa }}</td>
                         <td>{{ $t->buku->judul_buku }}</td>
                         <td>{{ $t->tanggal_pinjam}}</td>
 

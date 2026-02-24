@@ -6,6 +6,7 @@ use App\Models\Buku;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
+
 class PeminjamanController extends Controller
 {
     public function store(Buku $buku)
@@ -17,13 +18,15 @@ class PeminjamanController extends Controller
             return back()->with('error', 'Kamu belum terdaftar sebagai anggota');
         }
 
+        $anggota = $user->anggota;
+
         // 2. Cek stok
         if ($buku->stok < 1) {
             return back()->with('error', 'Stok buku habis');
         }
 
         // 3. Cek pinjaman aktif
-        $aktif = Transaksi::where('user_id', $user->id)
+        $aktif = Transaksi::where('anggota_id', $anggota->id)
             ->where('buku_id', $buku->id)
             ->whereIn('status', ['menunggu_pinjam', 'dipinjam'])
             ->exists();
@@ -32,20 +35,21 @@ class PeminjamanController extends Controller
             return back()->with('error', 'Buku ini sudah kamu pinjam');
         }
 
-        // 4. Simpan transaksi (MENUNGGU ACC)
+        // 4. Simpan transaksi
         Transaksi::create([
-            'user_id' => $user->id,
+            'anggota_id' => $anggota->id,
             'buku_id' => $buku->id,
             'tanggal_pinjam' => now(),
             'status' => 'menunggu_pinjam',
         ]);
 
-        return back()->with('success', 'Permintaan peminjaman dikirim, menunggu persetujuan admin');
+        return redirect()->route('buku.index')
+    ->with('success', 'Permintaan peminjaman dikirim, menunggu persetujuan admin');
     }
 
     public function index()
     {
-        $transaksi = Transaksi::with(['user', 'buku'])
+        $transaksi = Transaksi::with(['anggota.user', 'buku'])
             ->latest()
             ->get();
 
@@ -54,7 +58,9 @@ class PeminjamanController extends Controller
 
     public function ajukanPengembalian(Transaksi $transaksi)
     {
-        if ($transaksi->user_id !== auth()->id()) {
+        $user = auth()->user();
+
+        if (!$user->anggota || $transaksi->anggota_id !== $user->anggota->id) {
             abort(403);
         }
 
@@ -68,14 +74,21 @@ class PeminjamanController extends Controller
 
         return back()->with('success', 'Pengembalian diajukan, menunggu persetujuan admin');
     }
-        public function historyPinjaman()
-{
-    $history = Transaksi::with('buku')
-        ->where('user_id', auth()->id())
-        ->whereIn('status', ['dikembalikan', 'ditolak'])
-        ->latest()
-        ->get();
 
-    return view('buku.history', compact('history'));
-}
+    public function historyPinjaman()
+    {
+        $user = auth()->user();
+
+        if (!$user->anggota) {
+            return back()->with('error', 'Kamu belum terdaftar sebagai anggota');
+        }
+
+        $history = Transaksi::with('buku')
+            ->where('anggota_id', $user->anggota->id)
+            ->whereIn('status', ['dikembalikan', 'ditolak'])
+            ->latest()
+            ->get();
+
+        return view('buku.history', compact('history'));
+    }
 }

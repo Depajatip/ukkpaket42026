@@ -9,6 +9,7 @@ class Anggota extends Model
     protected $table = 'anggota';
 
     protected $fillable = [
+        'user_id',
         'nis',
         'no_telp',
         'alamat',
@@ -20,6 +21,11 @@ class Anggota extends Model
 public function user()
 {
     return $this->belongsTo(User::class);
+}
+
+public function transaksi()
+{
+    return $this->hasMany(Transaksi::class);
 }
 
 }

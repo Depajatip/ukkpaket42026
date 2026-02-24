@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 public function anggota()
 {
-    return $this->hasOne(Anggota::class, 'nis', 'nis');
+    return $this->hasOne(Anggota::class);
 }
 
 public function transaksi()

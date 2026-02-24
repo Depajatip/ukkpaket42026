@@ -9,14 +9,6 @@
         <p class="text-muted">Pilih buku favoritmu dan ajukan peminjaman</p>
     </div>
 
-    {{-- Flash Message --}}
-    @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">
-        {{ session('error') }}
-        <button class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    @endif
-
     {{-- Grid Buku --}}
     <div class="row g-4">
 
