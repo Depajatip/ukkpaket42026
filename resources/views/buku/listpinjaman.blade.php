@@ -63,7 +63,15 @@
                 </h5>
 
                 <small class="text-muted mb-1">
-                    Penulis: {{ $t->buku->penulis }}
+                    Penulis: {{ $t->buku->pengarang }}
+                </small>
+
+                <small class="text-muted mb-1">
+                    Penerbit: {{ $t->buku->penerbit }}
+                </small>
+
+                <small class="text-muted mb-1">
+                    Tahun Terbit: {{ $t->buku->tahun_terbit }}
                 </small>
 
                 <small class="text-muted mb-3">

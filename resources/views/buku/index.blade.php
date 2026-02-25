@@ -39,11 +39,11 @@
                     </h6>
 
                     <small class="text-muted mb-1">
-                        {{ $item->pengarang }}
+                        Penulis: {{ $item->pengarang }}
                     </small>
 
                     <small class="text-muted mb-2">
-                        {{ $item->penerbit }}
+                        Penerbit: {{ $item->penerbit }}
                     </small>
 
                     <div class="mt-auto">

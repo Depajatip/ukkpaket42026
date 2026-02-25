@@ -36,9 +36,9 @@
                 <div class="card-body">
                     <small class="text-muted">Status Anggota</small><br>
                     @if(auth()->user()->anggota)
-                        <span class="badge bg-success px-3 py-2">✔ Aktif</span>
+                    <span class="badge bg-success px-3 py-2">✔ Aktif</span>
                     @else
-                        <span class="badge bg-danger px-3 py-2">✖ Belum Terdaftar</span>
+                    <span class="badge bg-danger px-3 py-2">✖ Belum Terdaftar</span>
                     @endif
                 </div>
             </div>
@@ -46,10 +46,10 @@
     </div>
 
     {{-- Action Area --}}
-<div class="card shadow-sm border-0">
-    <div class="card-body">
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
 
-        @if(!auth()->user()->anggota)
+            @if(!auth()->user()->anggota)
             {{-- BELUM ANGGOTA --}}
             <div class="alert alert-warning d-flex align-items-center">
                 <span class="me-2 fs-4">📌</span>
@@ -62,7 +62,7 @@
 
             <div class="text-center mt-3">
                 <a href="{{ route('anggota.create') }}"
-                   class="btn btn-primary btn-lg px-4">
+                    class="btn btn-primary btn-lg px-4">
                     📖 Daftar Anggota Perpustakaan
                 </a>
             </div>
@@ -81,12 +81,9 @@
                 </div>
             </div>
 
-        @else
+            @else
             {{-- SUDAH ANGGOTA --}}
-            <div class="alert alert-success text-center">
-                🎉 Kamu sudah terdaftar sebagai anggota perpustakaan
-            </div>
-
+            
             <div class="row g-3 mt-3">
                 <div class="col-md-4">
                     <div class="card border-0 bg-light h-100">
@@ -106,6 +103,9 @@
                     <div class="card border-0 bg-light h-100">
                         <div class="card-body text-center">
                             <h6 class="fw-bold">🔄 Peminjaman Aktif</h6>
+                            <p class="text-muted small">
+                                Transaksi peminjaman buku yang sedang berlangsung
+                            </p>
                             <a href="{{ route('siswa.peminjaman.aktif') }}" class="btn btn-outline-primary btn-sm">
                                 Lihat Peminjaman
                             </a>
@@ -127,10 +127,10 @@
                     </div>
                 </div>
             </div>
-        @endif
+            @endif
 
+        </div>
     </div>
-</div>
 
 
 </div>
