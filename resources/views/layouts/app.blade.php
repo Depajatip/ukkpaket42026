@@ -9,7 +9,7 @@
     <title>{{ config('app.name', 'Perpustakaan') }}</title>
 
     {{-- Bootstrap via Vite --}}
-    @vite(['resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- SweetAlert CDN --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
