@@ -3,18 +3,37 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Transaksi;
 
 class TransaksiController extends Controller
 {
-    public function index()
-    {
-        $transaksi = Transaksi::with(['anggota.user', 'buku'])
-            ->latest()
-            ->get();
+public function index(Request $request)
+{
+    $transaksi = Transaksi::with(['anggota.user', 'buku'])
+        ->whereIn('status', ['menunggu_pinjam', 'menunggu_pengembalian'])
+        
+        ->when($request->search, function ($query) use ($request) {
+            $search = $request->search;
+            
+            $query->where(function ($subQuery) use ($search) {
+                $subQuery->where('id', 'like', '%' . $search . '%')
+                
+                ->orWhereHas('anggota.user', function ($q) use ($search) {
+                    $q->where('nama_siswa', 'like', '%' . $search . '%')
+                      ->orWhere('nis', 'like', '%' . $search . '%');
+                })
+                
+                ->orWhereHas('buku', function ($q) use ($search) {
+                    $q->where('judul_buku', 'like', '%' . $search . '%');
+                });
+            });
+        })
+        ->latest()
+        ->get();
 
-        return view('admin.transaksi.index', compact('transaksi'));
-    }
+    return view('admin.transaksi.index', compact('transaksi'));
+}
 
     public function approve(Transaksi $transaksi)
     {

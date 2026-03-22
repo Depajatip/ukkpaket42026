@@ -26,27 +26,27 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->validate([
-    'nis' => ['required', 'string'],
-    'password' => ['required', 'string'],
-]);
+            'nis' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
 
-if (! Auth::attempt([
-    'nis' => $request->nis,
-    'password' => $request->password,
-])) {
-    throw ValidationException::withMessages([
-        'nis' => __('auth.failed'),
-    ]);
-}
+        if (! Auth::attempt([
+            'nis' => $request->nis,
+            'password' => $request->password,
+        ])) {
+            throw ValidationException::withMessages([
+                'nis' => __('auth.failed'),
+            ]);
+        }
 
 
-$request->session()->regenerate();
+        $request->session()->regenerate();
 
-if (auth()->user()->role === 'admin') {
-    return redirect()->route('admin.dashboard');
-}
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
-return redirect()->route('user.dashboard');
+        return redirect()->route('user.dashboard');
     }
 
     /**

@@ -18,6 +18,29 @@
                 Pantau status peminjaman buku Anda secara real-time
             </p>
         </div>
+        <div class="mb-4 position-relative">
+
+                <div class="input-group" data-aos="fade-down">
+                    <input type="text"
+                        id="search"
+                        class="form-control"
+                        placeholder="Cari buku...">
+                </div>
+        </div>
+
+        </form>
+
+        <div class="d-flex justify-content-start mb-3 d-md-none gap-1" data-aos="fade-down">
+
+            <button class="btn btn-light layout-btn" data-layout="list">
+                ☰
+            </button>
+
+            <button class="btn btn-light layout-btn" data-layout="grid2">
+                ⬜⬜
+            </button>
+
+        </div>
 
         @if($transaksi->count() == 0)
 
@@ -32,90 +55,11 @@
 
         @else
 
-        <div class="row g-4">
-            @foreach($transaksi as $t)
+        {{-- GRID --}}
+        <div class="row layout-list g-4" id="bukuGrid">
 
-            <div class="col-12 col-sm-6 col-lg-4"
-                data-aos="fade-up"
-                data-aos-delay="{{ $loop->index * 100 }}">
+            @include('buku.gridpinjam')
 
-                <div class="pinjam-card h-100">
-
-                    {{-- IMAGE --}}
-                    <div class="pinjam-img-wrapper">
-
-                        <img src="{{ asset('storage/'.$t->buku->gambar) }}"
-                            class="pinjam-img">
-
-                        {{-- STATUS BADGE --}}
-                        @if($t->status == 'menunggu_pinjam')
-                        <div class="status-badge waiting">
-                            ⏳ Menunggu ACC
-                        </div>
-                        @elseif($t->status == 'dipinjam')
-                        <div class="status-badge active">
-                            📖 Sedang Dipinjam
-                        </div>
-                        @elseif($t->status == 'menunggu_pengembalian')
-                        <div class="status-badge returning">
-                            🔄 Menunggu Pengembalian
-                        </div>
-                        @endif
-
-                    </div>
-
-                    {{-- BODY --}}
-                    <div class="pinjam-body d-flex flex-column">
-
-                        <h5 class="fw-bold text-white">
-                            {{ $t->buku->judul_buku }}
-                        </h5>
-
-                        <small class="text-light opacity-75">
-                            Penulis: {{ $t->buku->pengarang }}
-                        </small>
-
-                        <small class="text-light opacity-75">
-                            Penerbit: {{ $t->buku->penerbit }}
-                        </small>
-
-                        <small class="text-light opacity-75">
-                            Tahun Terbit {{ $t->buku->tahun_terbit }}
-                        </small>
-
-                        <small class="text-light opacity-75 mb-3">
-                            Tanggal Peminjaman: {{ \Carbon\Carbon::parse($t->tanggal_pinjam)->format('d M Y') }}
-                        </small>
-
-                        {{-- BUTTON --}}
-                        <div class="mt-auto">
-
-                            @if($t->status == 'dipinjam')
-                            <form action="{{ route('pengembalian.ajukan',$t->id) }}" method="POST">
-                                @csrf
-                                <button class="btn btn-light w-100 btn-action">
-                                    Ajukan Pengembalian
-                                </button>
-                            </form>
-
-                            @elseif($t->status == 'menunggu_pinjam')
-                            <button class="btn btn-warning w-100 text-dark" disabled>
-                                Menunggu Persetujuan Peminjaman
-                            </button>
-
-                            @elseif($t->status == 'menunggu_pengembalian')
-                            <button class="btn btn-info w-100 text-dark" disabled>
-                                Menunggu Persetujuan Pengembalian
-                            </button>
-                            @endif
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            @endforeach
         </div>
 
         @endif
@@ -123,115 +67,236 @@
     </div>
 </div>
 
-{{-- AOS JS --}}
+<style>
+        #bukuGrid .buku-item {
+        transition: all .25s ease;
+    }
+    /* BACKGROUND */
+    .peminjaman-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #141e30, #243b55);
+    }
+
+    /* CARD */
+    .pinjam-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all .4s ease;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .3);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .pinjam-card:hover {
+        transform: translateY(-12px) scale(1.03);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, .45);
+    }
+
+    /* IMAGE */
+    .pinjam-img-wrapper {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pinjam-img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        transition: transform .5s ease;
+    }
+
+    .pinjam-card:hover .pinjam-img {
+        transform: scale(1.12) rotate(1deg);
+    }
+
+    /* STATUS BADGE */
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        backdrop-filter: blur(5px);
+        color: white;
+    }
+
+    .waiting {
+        background: rgba(255, 193, 7, .8);
+    }
+
+    .dipinjam {
+        background: rgba(13, 110, 253, .85);
+    }
+
+    .returning {
+        background: rgba(0, 200, 255, .85);
+    }
+
+    /* BODY */
+    .pinjam-body {
+        padding: 20px;
+    }
+
+    /* BUTTON */
+    .btn-action {
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all .3s ease;
+    }
+
+    .btn-action:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(255, 255, 255, .25);
+    }
+
+    .layout-btn.active {
+        background: #0d6efd;
+        color: white;
+    }
+
+    /* EMPTY FLOATING */
+    .floating {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:768px) {
+        .pinjam-img {
+            height: 200px;
+        }
+    }
+</style>
+
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
 <script>
-    AOS.init({
-        duration: 900,
-        once: true
+    document.addEventListener("DOMContentLoaded", function() {
+
+        /* ================= AOS ================= */
+
+        AOS.init({
+            duration: 500,
+            once: true,
+            offset: 120
+        });
+
+
+        /* ================= LAYOUT ================= */
+
+        const grid = document.getElementById("bukuGrid");
+        const buttons = document.querySelectorAll(".layout-btn");
+
+        function applyLayout(layout) {
+
+            const items = document.querySelectorAll(".buku-item");
+
+            items.forEach(item => {
+
+                item.classList.remove("col-12", "col-6");
+
+                if (layout === "list") {
+                    item.classList.add("col-12");
+                }
+
+                if (layout === "grid2") {
+                    item.classList.add("col-6");
+                }
+
+            });
+
+        }
+
+        function setActiveButton(layout) {
+
+            buttons.forEach(btn => {
+
+                btn.classList.remove("active");
+
+                if (btn.dataset.layout === layout) {
+                    btn.classList.add("active");
+                }
+
+            });
+
+        }
+
+        function initLayout() {
+
+            let savedLayout = localStorage.getItem("layoutMode") || "list";
+
+            applyLayout(savedLayout);
+            setActiveButton(savedLayout);
+
+            buttons.forEach(btn => {
+
+                btn.onclick = function() {
+
+                    let layout = this.dataset.layout;
+
+                    applyLayout(layout);
+                    setActiveButton(layout);
+
+                    localStorage.setItem("layoutMode", layout);
+
+                };
+
+            });
+
+        }
+
+        initLayout();
+
+        /* ================= LIVE SEARCH ================= */
+
+        const searchInput = document.getElementById("search");
+
+        let timeout = null;
+
+        searchInput.addEventListener("keyup", function() {
+
+            clearTimeout(timeout);
+
+            let query = this.value;
+
+            timeout = setTimeout(() => {
+
+                fetch(`{{ route('siswa.peminjaman') }}?search=${query}`, {
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+
+                        grid.innerHTML = html;
+
+                        initLayout();
+
+                        AOS.refresh();
+
+                    });
+
+            }, 300);
+
+        });
+
     });
 </script>
-
-<style>
-
-/* BACKGROUND */
-.peminjaman-wrapper {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #141e30, #243b55);
-}
-
-/* CARD */
-.pinjam-card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all .4s ease;
-    box-shadow: 0 10px 25px rgba(0,0,0,.3);
-    border: 1px solid rgba(255,255,255,0.15);
-}
-
-.pinjam-card:hover {
-    transform: translateY(-12px) scale(1.03);
-    box-shadow: 0 30px 60px rgba(0,0,0,.45);
-}
-
-/* IMAGE */
-.pinjam-img-wrapper {
-    position: relative;
-    overflow: hidden;
-}
-
-.pinjam-img {
-    width: 100%;
-    height: 240px;
-    object-fit: cover;
-    transition: transform .5s ease;
-}
-
-.pinjam-card:hover .pinjam-img {
-    transform: scale(1.12) rotate(1deg);
-}
-
-/* STATUS BADGE */
-.status-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 12px;
-    backdrop-filter: blur(5px);
-    color: white;
-}
-
-.waiting {
-    background: rgba(255,193,7,.8);
-}
-
-.active {
-    background: rgba(13,110,253,.85);
-}
-
-.returning {
-    background: rgba(0,200,255,.85);
-}
-
-/* BODY */
-.pinjam-body {
-    padding: 20px;
-}
-
-/* BUTTON */
-.btn-action {
-    border-radius: 30px;
-    font-weight: 600;
-    transition: all .3s ease;
-}
-
-.btn-action:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 25px rgba(255,255,255,.25);
-}
-
-/* EMPTY FLOATING */
-.floating {
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-    .pinjam-img {
-        height: 200px;
-    }
-}
-
-</style>
 
 @endsection

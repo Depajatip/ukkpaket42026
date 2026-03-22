@@ -93,27 +93,85 @@
     }
 
     .daftar-card {
-    background: linear-gradient(135deg, #4e73df, #1cc88a);
-    color: white;
-    border-radius: 20px;
-    overflow: hidden;
-}
+        background: linear-gradient(135deg, #4e73df, #1cc88a);
+        color: white;
+        border-radius: 20px;
+        overflow: hidden;
+    }
 
-.daftar-card p {
-    color: rgba(255,255,255,0.9);
-}
+    .daftar-card p {
+        color: rgba(255, 255, 255, 0.9);
+    }
 
-.daftar-btn {
-    background: white;
-    color: #1cc88a;
-    font-weight: bold;
-    transition: 0.3s ease;
-}
+    .daftar-btn {
+        background: white;
+        color: #1cc88a;
+        font-weight: bold;
+        transition: 0.3s ease;
+    }
 
-.daftar-btn:hover {
-    transform: scale(1.05);
-    background: #f8f9fc;
-}
+    .daftar-btn:hover {
+        transform: scale(1.05);
+        background: #f8f9fc;
+    }
+
+    /* Card Statistik Baru */
+    .stat-card {
+        background: rgba(255, 255, 255, 0.2);
+        /* Glass effect */
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 20px;
+        color: white;
+        transition: 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .stat-icon {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    /* Warna icon disesuaikan agar tetap cerah di bg gelap */
+    .bg-info-light {
+        background: rgba(0, 212, 255, 0.3);
+        color: #00d4ff;
+    }
+
+    .bg-warning-light {
+        background: rgba(255, 193, 7, 0.3);
+        color: #ffc107;
+    }
+
+    .bg-success-light {
+        background: rgba(40, 167, 69, 0.3);
+        color: #28a745;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        opacity: 0.8;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
     @media(max-width:768px) {
         .hero {
@@ -125,16 +183,18 @@
 <div class="bg-blob blob1"></div>
 <div class="bg-blob blob2"></div>
 
-<div class="container my-5 position-relative" style="z-index:2;">
+<div class="container py-5 position-relative" style="z-index:2;">
 
     <!-- HERO -->
     <div class="hero mb-5" data-aos="fade-up">
-        <h3 class="fw-bold">
-            👋 Halo, {{ auth()->user()->nama_siswa }}
-        </h3>
-        <p class="mb-0">
-            Selamat datang kembali di Sistem Perpustakaan Digital Sekolah
-        </p>
+        <div class="col-md-6">
+            <h3 class="fw-bold">
+                👋 Halo, {{ auth()->user()->nama_siswa }}
+            </h3>
+            <p class="mb-0">
+                Selamat datang di Sistem Perpustakaan Digital
+            </p>
+        </div>
     </div>
 
     <!-- IDENTITAS MURID -->
@@ -166,39 +226,70 @@
                 </div>
             </div>
         </div>
-
     </div>
-    
+
+    <div class="row g-4 mb-5">
+        <div class="col-6 col-md-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="stat-card">
+                <div class="stat-icon bg-info-light">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <div class="stat-label">Dipinjam</div>
+                <div class="stat-value">{{ $jumlahDipinjam ?? 0 }}</div>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4" data-aos="zoom-in" data-aos-delay="400">
+            <div class="stat-card">
+                <div class="stat-icon bg-warning-light">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="stat-label">Menunggu</div>
+                <div class="stat-value">{{ $jumlahMenunggu ?? 0 }}</div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4" data-aos="zoom-in" data-aos-delay="500">
+            <div class="stat-card">
+                <div class="stat-icon bg-success-light">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="stat-label">Selesai</div>
+                <div class="stat-value">{{ $jumlahKembali ?? 0 }}</div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- FITUR UTAMA -->
     @php
-    $isActive = auth()->user()->anggota 
-                 && auth()->user()->anggota->status_anggota === 'aktif';
+    $isActive = auth()->user()->anggota
+    && auth()->user()->anggota->status_anggota === 'aktif';
     @endphp
 
     {{-- FITUR DAFTAR ANGGOTA --}}
-@if(!$isActive)
-<div class="row mb-5" data-aos="fade-up">
-    <div class="col-12 ">
-        <div class="card shadow-lg border-0 text-center p-5 position-relative daftar-card">
+    @if(!$isActive)
+    <div class="row mb-5" data-aos="fade-up">
+        <div class="col-12 ">
+            <div class="card shadow-lg border-0 text-center p-5 position-relative daftar-card">
 
-            <h4 class="fw-bold mb-3">
-                Kamu Belum Terdaftar Sebagai Anggota
-            </h4>
+                <h4 class="fw-bold mb-3">
+                    Kamu Belum Terdaftar Sebagai Anggota
+                </h4>
 
-            <p class="text-muted mb-4">
-                Daftarkan dirimu sekarang agar bisa meminjam buku dan menikmati semua fitur perpustakaan.
-            </p>
+                <p class="text-muted mb-4">
+                    Daftarkan dirimu sekarang agar bisa meminjam buku dan menikmati semua fitur perpustakaan.
+                </p>
 
-            <a href="{{ route('anggota.create') }}"
-               class="btn btn-lg btn-success rounded-pill px-5 shadow-sm daftar-btn">
-               🚀 Daftar Anggota Sekarang
-            </a>
+                <a href="{{ route('anggota.create') }}"
+                    class="btn btn-lg btn-success rounded-pill px-5 shadow-sm daftar-btn">
+                    🚀 Daftar Anggota Sekarang
+                </a>
 
+            </div>
         </div>
     </div>
-</div>
-@endif
+    @endif
 
     <div class="row g-4 mb-5">
 
@@ -234,7 +325,7 @@
                 </p>
 
                 @if($isActive)
-                <a href="{{ route('siswa.peminjaman.aktif') }}"
+                <a href="{{ route('siswa.peminjaman') }}"
                     class="btn btn-outline-primary rounded-pill px-4">
                     Lihat
                 </a>
@@ -275,12 +366,22 @@
     <!-- AKTIVITAS -->
     <div class="activity-box" data-aos="fade-up">
         <h5 class="fw-bold mb-3">🔔 Aktivitas Terbaru</h5>
-
         <ul class="list-unstyled mb-0">
-            <li class="mb-2">📚 Kamu meminjam buku <b>Algoritma Dasar</b></li>
-            <li class="mb-2">🔄 Buku <b>Basis Data</b> akan jatuh tempo 3 hari lagi</li>
-            <li>📌 Jangan lupa kembalikan tepat waktu ya!</li>
+            @if($isActive)
+            @forelse($aktivitas as $a)
+            <li class="mb-2">
+                📚 Kamu meminjam buku <b>{{ $a->buku->judul_buku }}</b>
+            </li>
+            @empty
+            <li>Tidak ada aktivitas</li>
+            @endforelse
+            @else
+            <button class="btn btn-secondary rounded-pill px-4" disabled>
+                Daftar Anggota Dulu
+            </button>
+            @endif
         </ul>
+
     </div>
 
 </div>

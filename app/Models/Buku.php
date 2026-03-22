@@ -16,10 +16,9 @@ class Buku extends Model
         'stok',
         'gambar',
     ];
-    
-    public function transaksi()
-{
-    return $this->hasMany(Transaksi::class);
-}
-}
 
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+}

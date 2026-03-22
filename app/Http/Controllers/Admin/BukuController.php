@@ -10,9 +10,17 @@ use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $buku = Buku::latest()->get();
+        $buku = Buku::latest()
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('judul_buku', 'like', '%' . $request->search . '%')
+                    ->orWhere('pengarang', 'like', '%' . $request->search . '%')
+                    ->orWhere('penerbit', 'like', '%' . $request->search . '%')
+                    ->orWhere('tahun_terbit', 'like', '%' . $request->search . '%');
+            })
+            ->get();
+
         return view('admin.buku.index', compact('buku'));
     }
 
@@ -20,29 +28,36 @@ class BukuController extends Controller
     {
         return view('admin.buku.create');
     }
+public function store(Request $request)
+{
+    $request->validate([
+        'judul_buku' => 'required',
+        'pengarang' => 'required',
+        'penerbit' => 'required',
+        'tahun_terbit' => 'required|integer|min:1901|max:2155', // Batas aman MySQL YEAR
+        'stok' => 'required|integer|min:0',
+        'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ], [
+        // Custom feedback text
+        'tahun_terbit.max' => 'Waduh! Tahun terbit tidak boleh lebih dari 2155 karena batasan sistem.',
+        'tahun_terbit.integer' => 'Tahun terbit harus berupa angka ya!',
+    ]);
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'judul_buku' => 'required',
-            'pengarang' => 'required',
-            'penerbit' => 'required',
-            'tahun_terbit' => 'required',
-            'stok' => 'required|integer|min:0',
-            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    $data = $request->all();
 
-        $data = $request->all();
-
-        if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('buku', 'public');
-        }
-
-        Buku::create($data);
-
-        return redirect()->route('admin.buku.index')
-            ->with('success', 'Buku berhasil ditambahkan');
+    if ($request->hasFile('gambar')) {
+        $data['gambar'] = $request->file('gambar')->store('buku', 'public');
     }
+
+    try {
+        Buku::create($data);
+        return redirect()->route('admin.buku.index')
+            ->with('success', 'Sip! Buku berhasil ditambahkan.');
+    } catch (\Exception $e) {
+        // Jika masih ada error database tak terduga
+        return back()->withInput()->with('error_sistem', 'Gagal menyimpan: ' . $e->getMessage());
+    }
+}
 
     public function edit(Buku $buku)
     {
@@ -81,5 +96,4 @@ class BukuController extends Controller
 
         return back()->with('success', 'Buku berhasil dihapus');
     }
-
 }

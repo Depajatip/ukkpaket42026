@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.admin.admin')
 
 @section('content')
 
@@ -8,12 +8,11 @@
     class="btn btn-primary mb-3">
     ➕ Tambah Buku
 </a>
-
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
+<form action="{{ route('admin.buku.index') }}" method="GET" class="d-flex mb-3">
+    <input type="text" name="search" class="form-control me-2"
+        placeholder="Cari.." value="{{ request('search') }}">
+    <button type="submit" class="btn btn-secondary">Cari</button>
+</form>
 
 <div class="card shadow-sm border-0">
     <div class="card-body">
@@ -24,6 +23,8 @@
                     <th>Sampul</th>
                     <th>Judul</th>
                     <th>Penulis</th>
+                    <th>Penerbit</th>
+                    <th>Tahun Terbit</th>
                     <th>Stok</th>
                     <th>Aksi</th>
                 </tr>
@@ -43,6 +44,8 @@
                     </td>
                     <td>{{ $item->judul_buku }}</td>
                     <td>{{ $item->pengarang }}</td>
+                    <td>{{ $item->penerbit }}</td>
+                    <td>{{ $item->tahun_terbit }}</td>
                     <td>{{ $item->stok }}</td>
                     <td>
                         <a href="{{ route('admin.buku.edit', $item) }}"

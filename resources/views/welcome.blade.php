@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'LenteraMu') }}</title>
 
-    <!-- Font -->
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet">
 
-    <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,13 +24,11 @@
             overflow-x: hidden;
         }
 
-        /* Navbar */
         .navbar-custom {
             backdrop-filter: blur(15px);
             background: rgba(255, 255, 255, 0.85);
         }
 
-        /* Hero */
         .hero {
             padding-top: 120px;
         }
@@ -80,7 +76,6 @@
             z-index: 2;
         }
 
-        /* Card */
         .feature-card {
             border-radius: 20px;
             transition: 0.4s ease;
@@ -95,7 +90,6 @@
             background: bisque;
         }
 
-        /* Feature Modern Card */
         .feature-modern {
             border-radius: 25px;
             transition: all .4s ease;
@@ -107,7 +101,6 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
         }
 
-        /* Icon Circle */
         .icon-circle {
             width: 70px;
             height: 70px;
@@ -121,7 +114,6 @@
             color: white;
         }
 
-        /* Step Section */
         .step-box {
             background: white;
             padding: 40px;
@@ -158,14 +150,12 @@
             transition: all 0.3s ease;
             display: inline-block;
         }
-
-        /* Animasi naik */
+        
         .nav-link-custom:hover {
             color: #facc15;
             transform: translateY(-3px);
         }
 
-        /* Underline animasi */
         .nav-link-custom::after {
             content: "";
             position: absolute;
@@ -181,9 +171,97 @@
             width: 100%;
         }
 
+        .scroll-down-arrow {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-down-arrow:hover {
+            color: #198754;
+            bottom: 25px;
+        }
+
+        .mouse {
+            width: 25px;
+            height: 40px;
+            border: 2px solid #333;
+            border-radius: 20px;
+            position: relative;
+            margin-bottom: 5px;
+        }
+
+        .wheel {
+            width: 4px;
+            height: 8px;
+            background-color: #333;
+            border-radius: 2px;
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: mouseWheel 1.5s infinite;
+        }
+
+        .arrow-down {
+            font-size: 1.2rem;
+            animation: arrowDown 1.5s infinite;
+        }
+
+        @keyframes mouseWheel {
+            0% {
+                top: 6px;
+                opacity: 1;
+            }
+
+            100% {
+                top: 18px;
+                opacity: 0;
+            }
+        }
+
+        @keyframes arrowDown {
+            0% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translateY(5px);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+        }
+
         @media (max-width:768px) {
             .hero-title {
                 font-size: 2rem;
+            }
+
+            .scroll-down-arrow {
+                bottom: 20px;
+                padding-bottom: 50px;
+            }
+
+            .mouse {
+                width: 20px;
+                height: 35px;
+            }
+
+            .arrow-down {
+                font-size: 1rem;
             }
         }
     </style>
@@ -191,7 +269,6 @@
 
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light navbar-custom fixed-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold text-warning" href="#">
@@ -232,65 +309,46 @@
         </div>
     </nav>
 
-    <!-- HERO -->
-    <section class="hero full-section position-relative" id="halaman-utama">
+    <section class="hero full-section position-relative" id="halaman-utama" style="min-height: 100vh; display: flex; align-items: center;">
         <div class="blob"></div>
-
         <div class="container">
             <div class="row align-items-center">
-
-                <!-- Left Text -->
                 <div class="col-lg-6 text-center text-lg-start" data-aos="fade-right">
                     <h1 class="hero-title mb-4">
-                        Sistem Informasi Perpustakaan Digital Modern
+                        Selamat Datang di {{ config('app.name', 'LenteraMu') }}!
                     </h1>
-
                     <p class="hero-sub mb-4">
-                        Platform pintar untuk mengelola peminjaman, pengembalian,
-                        dan koleksi buku sekolah secara efisien dan profesional.
+                        Platform pintar untuk mengelola peminjaman, pengembalian, dan koleksi buku sekolah secara efisien dan profesional.
                     </p>
-
                     <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-lg-start">
-
                         @auth
                         @if(auth()->user()->role == 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="btn btn-success btn-main">
-                            Buka Dashboard Admin
-                        </a>
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-success btn-main"> Buka Dashboard Admin </a>
                         @else
-                        <a href="{{ route('user.dashboard') }}" class="btn btn-success btn-main">
-                            Buka Dashboard
-                        </a>
+                        <a href="{{ route('user.dashboard') }}" class="btn btn-success btn-main"> Buka Dashboard </a>
                         @endif
                         @else
-                        <a href="{{ route('login') }}" class="btn btn-success btn-main">
-                            login murid
-                        </a>
-                        <a href="{{ route('admin.login') }}" class="btn btn-outline-dark btn-main">
-                            login admin
-                        </a>
+                        <a href="{{ route('login') }}" class="btn btn-success btn-main"> login murid </a>
+                        <a href="{{ route('admin.login') }}" class="btn btn-outline-dark btn-main"> login admin </a>
                         @endauth
-
                     </div>
 
-                    <!-- Statistik -->
                     <div class="row mt-5 text-center text-lg-start">
                         <div class="col-4">
-                            <h4 class="fw-bold text-warning">120+</h4>
+                            <h4 class="fw-bold text-warning">{{ $totalBuku }}+</h4>
                             <small class="text-muted">Total Buku</small>
                         </div>
                         <div class="col-4">
-                            <h4 class="fw-bold text-success">85+</h4>
+                            <h4 class="fw-bold text-success">{{ $totalAnggota }}+</h4>
                             <small class="text-muted">Anggota</small>
                         </div>
                         <div class="col-4">
-                            <h4 class="fw-bold text-danger">30+</h4>
+                            <h4 class="fw-bold text-danger">{{ $totalTransaksi }}+</h4>
                             <small class="text-muted">Transaksi</small>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Illustration -->
                 <div class="col-lg-6 text-center mt-5 mt-lg-0" data-aos="fade-left">
                     <svg width="350" viewBox="0 0 512 512">
                         <circle cx="256" cy="256" r="200" fill="#fde68a" />
@@ -300,15 +358,21 @@
                         <rect x="220" y="270" width="90" height="15" fill="white" />
                     </svg>
                 </div>
-
             </div>
         </div>
+
+        <a href="#fitur-unggulan" class="scroll-down-arrow" aria-label="Scroll ke bawah">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <div class="arrow-down">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </a>
     </section>
 
-    <!-- FEATURES -->
     <section class="full-section position-relative overflow-hidden" style="background: linear-gradient(135deg,#ffffff,#fff7ed);" id="fitur-unggulan">
 
-        <!-- Decorative Background Blob -->
         <div style="position:absolute; top:-150px; right:-150px; width:400px; height:400px; background:#fde68a; filter:blur(120px); opacity:.5;"></div>
 
         <div class="container text-center position-relative">
@@ -322,7 +386,6 @@
 
             <div class="row g-4 justify-content-center">
 
-                <!-- Card 1 -->
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="card border-0 shadow-lg p-5 h-100 feature-modern">
                         <div class="icon-circle mb-4">
@@ -335,7 +398,6 @@
                     </div>
                 </div>
 
-                <!-- Card 2 -->
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="card border-0 shadow-lg p-5 h-100 feature-modern">
                         <div class="icon-circle mb-4">
@@ -348,7 +410,6 @@
                     </div>
                 </div>
 
-                <!-- Card 3 -->
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="card border-0 shadow-lg p-5 h-100 feature-modern">
                         <div class="icon-circle mb-4">
@@ -365,56 +426,44 @@
         </div>
     </section>
 
-    <!-- CARA KERJA -->
     <section class="full-section position-relative" style="background: linear-gradient(135deg,#fef3c7,#ffffff);" id="cara-kerja">
-
         <div class="container text-center">
+            <h2 class="fw-bold mb-3" data-aos="fade-up"> Cara Kerja Sistem </h2>
+            <p class="text-muted mb-5" data-aos="fade-up" data-aos-delay="100"> Hanya dalam beberapa langkah mudah untuk menggunakan sistem </p>
 
-            <h2 class="fw-bold mb-3" data-aos="fade-up">
-                Cara Kerja Sistem
-            </h2>
+            <div class="row justify-content-center position-relative g-4">
 
-            <p class="text-muted mb-5" data-aos="fade-up" data-aos-delay="100">
-                Hanya dalam tiga langkah mudah untuk menggunakan sistem
-            </p>
+                <div class="d-none d-md-block" style="position:absolute; top:45%; left:0; right:0; height:4px; background:#facc15; z-index:0;"></div>
 
-            <div class="row justify-content-center align-items-center position-relative">
-
-                <!-- Garis Tengah -->
-                <div class="d-none d-md-block"
-                    style="position:absolute; top:50%; left:0; right:0; height:4px; background:#facc15; z-index:0;">
-                </div>
-
-                <!-- Step 1 -->
-                <div class="col-md-4 position-relative" data-aos="zoom-in">
-                    <div class="step-box">
-                        <div class="step-number">1</div>
-                        <h5 class="fw-semibold mt-4">Daftar Akun</h5>
-                        <p class="text-muted">
-                            Daftar sebagai anggota perpustakaan melalui sistem online.
-                        </p>
+                <div class="col-md-3 d-flex" data-aos="zoom-in">
+                    <div class="step-box w-100 d-flex flex-column bg-white p-4 shadow-sm rounded-4" style="z-index:1;">
+                        <div class="step-number mx-auto">1</div>
+                        <h5 class="fw-semibold mt-4">Login Akun</h5>
+                        <p class="text-muted mb-0"> Gunakan NIS untuk login ke akun yang sudah disediakan oleh sekolahan. </p>
                     </div>
                 </div>
 
-                <!-- Step 2 -->
-                <div class="col-md-4 position-relative" data-aos="zoom-in" data-aos-delay="150">
-                    <div class="step-box">
-                        <div class="step-number">2</div>
+                <div class="col-md-3 d-flex" data-aos="zoom-in" data-aos-delay="150">
+                    <div class="step-box w-100 d-flex flex-column bg-white p-4 shadow-sm rounded-4" style="z-index:1;">
+                        <div class="step-number mx-auto">2</div>
+                        <h5 class="fw-semibold mt-4">Daftar Sebagai Anggota</h5>
+                        <p class="text-muted mb-0"> Daftar sebagai anggota perpustakaan untuk mendapatkan akses penuh ke fitur peminjaman. </p>
+                    </div>
+                </div>
+
+                <div class="col-md-3 d-flex" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="step-box w-100 d-flex flex-column bg-white p-4 shadow-sm rounded-4" style="z-index:1;">
+                        <div class="step-number mx-auto">3</div>
                         <h5 class="fw-semibold mt-4">Pilih Buku</h5>
-                        <p class="text-muted">
-                            Ajukan peminjaman buku yang tersedia melalui dashboard.
-                        </p>
+                        <p class="text-muted mb-0"> Pilih buku yang ingin dipinjam dari ribuan koleksi daftar yang tersedia. </p>
                     </div>
                 </div>
 
-                <!-- Step 3 -->
-                <div class="col-md-4 position-relative" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="step-box">
-                        <div class="step-number">3</div>
+                <div class="col-md-3 d-flex" data-aos="zoom-in" data-aos-delay="450">
+                    <div class="step-box w-100 d-flex flex-column bg-white p-4 shadow-sm rounded-4" style="z-index:1;">
+                        <div class="step-number mx-auto">4</div>
                         <h5 class="fw-semibold mt-4">Konfirmasi Admin</h5>
-                        <p class="text-muted">
-                            Admin menyetujui dan buku siap untuk dipinjam.
-                        </p>
+                        <p class="text-muted mb-0"> Admin menyetujui dan buku siap untuk diambil di perpustakaan. </p>
                     </div>
                 </div>
 
@@ -422,12 +471,10 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="text-center py-4 text-muted small" id="footer">
-        © {{ date('Y') }} {{ config('app.name', 'LenteraMu') }} — Digital Library System
+        © {{ date('Y') }} {{ config('app.name') }} By Depaa — Digital Library System
     </footer>
 
-    <!-- AOS Script -->
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <script>
         AOS.init({

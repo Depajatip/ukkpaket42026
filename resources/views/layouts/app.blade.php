@@ -15,6 +15,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        body {
+  padding-top: 0px; /* atau sesuai tinggi navbar */
+}
         /* ===== NAVBAR MODERN ===== */
         .navbar-modern {
             background: linear-gradient(135deg, #4e73df, #224abe);
@@ -27,6 +30,11 @@
         .nav-anim {
             position: relative;
             transition: 0.3s ease;
+        }
+
+        .nav-link.active {
+            color: #031531 !important;
+            font-weight: 600;
         }
 
         .nav-anim::after {
@@ -94,20 +102,36 @@
                     {{-- USER ROLE --}}
                     @if($user->role === 'user')
 
+
+
                     <li class="nav-item">
-                        <a class="nav-link nav-anim" href="/dashboard">Dashboard</a>
+                        <a class="nav-link nav-anim {{ request()->routeIs('user.dashboard') ? 'active' : '' }}"
+                            href="{{ route('user.dashboard') }}">
+                            Dashboard
+                        </a>
                     </li>
 
                     @if($isActive)
 
                     <li class="nav-item">
-                        <a class="nav-link nav-anim" href="{{ route('buku.index') }}">Lihat Buku</a>
+                        <a class="nav-link nav-anim {{ request()->routeIs('buku.index') ? 'active' : '' }}"
+                            href="{{ route('buku.index') }}">
+                            Lihat Buku
+                        </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link nav-anim" href="{{ route('siswa.peminjaman.aktif') }}">Peminjaman Aktif</a>
+                        <a class="nav-link nav-anim {{ request()->routeIs('siswa.peminjaman') ? 'active' : '' }}"
+                            href="{{ route('siswa.peminjaman') }}">
+                            Peminjaman Aktif
+                        </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link nav-anim" href="{{ route('siswa.history') }}">History Peminjaman</a>
+                        <a class="nav-link nav-anim {{ request()->routeIs('siswa.history') ? 'active' : '' }}"
+                            href="{{ route('siswa.history') }}">
+                            History Peminjaman
+                        </a>
                     </li>
                     @else
 
@@ -162,47 +186,55 @@
     {{-- CONTENT --}}
     @yield('content')
 
-{{-- SWEET ALERT SUCCESS --}}
-@if(session('success'))
-<script>
-document.addEventListener("DOMContentLoaded", function() {
+    {{-- SWEET ALERT SUCCESS --}}
+    @if(session('success'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
 
-    const navEntries = performance.getEntriesByType("navigation");
-    if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
-        return;
-    }
+            const navEntries = performance.getEntriesByType("navigation");
+            if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
+                return;
+            }
 
-    Swal.fire({
-        icon: 'success',
-        title: 'Berhasil',
-        text: '{{ session('success') }}',
-        confirmButtonText: 'OK'
-    });
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('
+                success ') }}',
+                confirmButtonText: 'OK'
+            });
 
-});
+        });
+    </script>
+    @endif
+
+    {{-- SWEET ALERT ERROR --}}
+    @if(session('error'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const navEntries = performance.getEntriesByType("navigation");
+            if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
+                return;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('
+                error ') }}',
+                confirmButtonText: 'OK'
+            });
+
+        });
+    </script>
+    @endif
+    <script>
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
 </script>
-@endif
-
-{{-- SWEET ALERT ERROR --}}
-@if(session('error'))
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-
-    const navEntries = performance.getEntriesByType("navigation");
-    if (navEntries.length > 0 && navEntries[0].type === "back_forward") {
-        return;
-    }
-
-    Swal.fire({
-        icon: 'error',
-        title: 'Gagal',
-        text: '{{ session('error') }}',
-        confirmButtonText: 'OK'
-    });
-
-});
-</script>
-@endif
 
 </body>
 

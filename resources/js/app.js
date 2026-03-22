@@ -1,6 +1,5 @@
-import './bootstrap'
+import * as bootstrap from 'bootstrap'; // Import semua komponen bootstrap
+window.bootstrap = bootstrap; // Daftarkan ke global window
 
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-
-import Swal from 'sweetalert2'
-window.Swal = Swal
+import Swal from 'sweetalert2';
+window.Swal = Swal;

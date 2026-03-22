@@ -20,7 +20,6 @@ class AdminLoginController extends Controller
             'password' => 'required'
         ]);
 
-        // login + pastikan role admin
         if (Auth::attempt([
             'email' => $credentials['email'],
             'password' => $credentials['password'],

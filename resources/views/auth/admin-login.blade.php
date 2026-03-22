@@ -7,6 +7,7 @@
 body {
     background: linear-gradient(135deg, #1f1c2c, #928dab);
     min-height: 100vh;
+    overflow: hidden;
 }
 
 .glass-admin {

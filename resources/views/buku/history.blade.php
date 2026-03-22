@@ -19,6 +19,30 @@
             </p>
         </div>
 
+        <div class="mb-4 position-relative">
+
+                <div class="input-group" data-aos="fade-down">
+                    <input type="text"
+                        id="search"
+                        class="form-control"
+                        placeholder="Cari buku...">
+                </div>
+        </div>
+
+        </form>
+
+        <div class="d-flex justify-content-start mb-3 d-md-none gap-1" data-aos="fade-down">
+
+            <button class="btn btn-light layout-btn" data-layout="list">
+                ☰
+            </button>
+
+            <button class="btn btn-light layout-btn" data-layout="grid2">
+                ⬜⬜
+            </button>
+
+        </div>
+
         @if($history->count() == 0)
 
         <div class="text-center py-5" data-aos="zoom-in">
@@ -32,68 +56,9 @@
 
         @else
 
-        <div class="row g-4">
+        <div class="row layout-list g-4" id="bukuGrid">
 
-            @foreach($history as $t)
-
-            <div class="col-12 col-sm-6 col-lg-4"
-                data-aos="fade-up"
-                data-aos-delay="{{ $loop->index * 100 }}">
-
-                <div class="history-card h-100">
-
-                    {{-- IMAGE --}}
-                    <div class="history-img-wrapper">
-                        <img src="{{ asset('storage/'.$t->buku->gambar) }}"
-                            class="history-img">
-
-                        {{-- STATUS BADGE --}}
-                        @if($t->status == 'dikembalikan')
-                        <div class="status-badge returned">
-                            ✅ Sudah Dikembalikan
-                        </div>
-                        @elseif($t->status == 'ditolak')
-                        <div class="status-badge rejected">
-                            ❌ Ditolak
-                        </div>
-                        @endif
-                    </div>
-
-                    {{-- BODY --}}
-                    <div class="history-body d-flex flex-column">
-
-                        <h5 class="fw-bold text-white">
-                            {{ $t->buku->judul_buku }}
-                        </h5>
-
-                        <small class="text-light opacity-75">
-                            Penulis: {{ $t->buku->pengarang }}
-                        </small>
-
-                        <small class="text-light opacity-75">
-                            Penerbit: {{ $t->buku->penerbit }}
-                        </small>
-
-                        <small class="text-light opacity-75">
-                            Tahun Terbit {{ $t->buku->tahun_terbit }}
-                        </small>
-
-                        <small class="text-light opacity-75">
-                            Tanggal Peminjaman: {{ \Carbon\Carbon::parse($t->tanggal_pinjam)->format('d M Y') }}
-                        </small>
-                        <small class="text-light opacity-75 mb-3">
-                            Tanggal Kembali: {{ \Carbon\Carbon::parse($t->tanggal_kembali)->format('d M Y') }}
-                        </small>
-                        <small class="text-light opacity-50">
-                            ID Transaksi: #{{ $t->id }}
-                        </small>
-
-                    </div>
-                </div>
-
-            </div>
-
-            @endforeach
+            @include('buku.gridhistory')
 
         </div>
 
@@ -102,16 +67,10 @@
     </div>
 </div>
 
-{{-- AOS JS --}}
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>
-    AOS.init({
-        duration: 900,
-        once: true
-    });
-</script>
-
 <style>
+        #bukuGrid .buku-item {
+        transition: all .25s ease;
+    }
     /* BACKGROUND */
     .history-wrapper {
         min-height: 100vh;
@@ -181,6 +140,23 @@
         animation: float 3s ease-in-out infinite;
     }
 
+        /* BUTTON */
+    .btn-action {
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all .3s ease;
+    }
+
+    .btn-action:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(255, 255, 255, .25);
+    }
+
+    .layout-btn.active {
+        background: #0d6efd;
+        color: white;
+    }
+
     @keyframes float {
         0% {
             transform: translateY(0px);
@@ -202,5 +178,121 @@
         }
     }
 </style>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+        /* ================= AOS ================= */
+
+        AOS.init({
+            duration: 500,
+            once: true,
+            offset: 120
+        });
+
+
+        /* ================= LAYOUT ================= */
+
+        const grid = document.getElementById("bukuGrid");
+        const buttons = document.querySelectorAll(".layout-btn");
+
+        function applyLayout(layout) {
+
+            const items = document.querySelectorAll(".buku-item");
+
+            items.forEach(item => {
+
+                item.classList.remove("col-12", "col-6");
+
+                if (layout === "list") {
+                    item.classList.add("col-12");
+                }
+
+                if (layout === "grid2") {
+                    item.classList.add("col-6");
+                }
+
+            });
+
+        }
+
+        function setActiveButton(layout) {
+
+            buttons.forEach(btn => {
+
+                btn.classList.remove("active");
+
+                if (btn.dataset.layout === layout) {
+                    btn.classList.add("active");
+                }
+
+            });
+
+        }
+
+        function initLayout() {
+
+            let savedLayout = localStorage.getItem("layoutMode") || "list";
+
+            applyLayout(savedLayout);
+            setActiveButton(savedLayout);
+
+            buttons.forEach(btn => {
+
+                btn.onclick = function() {
+
+                    let layout = this.dataset.layout;
+
+                    applyLayout(layout);
+                    setActiveButton(layout);
+
+                    localStorage.setItem("layoutMode", layout);
+
+                };
+
+            });
+
+        }
+
+        initLayout();
+
+        /* ================= LIVE SEARCH ================= */
+
+        const searchInput = document.getElementById("search");
+
+        let timeout = null;
+
+        searchInput.addEventListener("keyup", function() {
+
+            clearTimeout(timeout);
+
+            let query = this.value;
+
+            timeout = setTimeout(() => {
+
+                fetch(`{{ route('siswa.history') }}?search=${query}`,{
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+
+                        grid.innerHTML = html;
+
+                        initLayout();
+
+                        AOS.refresh();
+
+                    });
+
+            }, 300);
+
+        });
+
+    });
+</script>
 
 @endsection

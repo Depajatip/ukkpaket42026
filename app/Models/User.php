@@ -24,15 +24,15 @@ class User extends Authenticatable
         'kelas',
         'email',
     ];
-public function anggota()
-{
-    return $this->hasOne(Anggota::class);
-}
+    public function anggota()
+    {
+        return $this->hasOne(Anggota::class);
+    }
 
-public function transaksi()
-{
-    return $this->hasMany(Transaksi::class);
-}
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -12,107 +12,173 @@
         {{-- HEADER --}}
         <div class="text-center mb-5" data-aos="fade-down">
             <h2 class="fw-bold katalog-title">
-                📚 Koleksi Buku Perpustakaan
+                Koleksi Buku Perpustakaan
             </h2>
             <p class="text-light opacity-75">
                 Temukan buku favoritmu dan nikmati pengalaman membaca terbaik
             </p>
         </div>
 
+        <div class="mb-4 position-relative">
+
+            <div class="input-group" data-aos="fade-down">
+
+                <input type="text"
+                    id="search"
+                    class="form-control"
+                    placeholder="Cari buku...">
+
+            </div>
+
+        </div>
+
+        <div class="d-flex justify-content-start mb-3 d-md-none gap-1" data-aos="fade-down">
+
+            <button class="btn btn-light layout-btn" data-layout="list">
+                ☰
+            </button>
+
+            <button class="btn btn-light layout-btn" data-layout="grid2">
+                ⬜⬜
+            </button>
+
+        </div>
+
         {{-- GRID --}}
-        <div class="row g-4">
+        <div class="row layout-list g-4" id="bukuGrid">
 
-            @forelse($buku as $item)
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3"
-                data-aos="zoom-in-up"
-                data-aos-delay="{{ $loop->index * 100 }}">
-
-                <div class="katalog-card h-100">
-
-                    {{-- IMAGE --}}
-                    <div class="katalog-img-wrapper">
-                        <img src="{{ asset('storage/'.$item->gambar) }}"
-                            alt="{{ $item->judul_buku }}"
-                            class="katalog-img">
-
-                        <div class="year-badge">
-                            {{ $item->tahun_terbit }}
-                        </div>
-                    </div>
-
-                    {{-- CONTENT --}}
-                    <div class="katalog-body d-flex flex-column">
-
-                        <h6 class="katalog-judul">
-                            {{ $item->judul_buku }}
-                        </h6>
-
-                        <small class="text-light opacity-75">
-                            Penulis: {{ $item->pengarang }}
-                        </small>
-
-                        <small class="text-light opacity-75 mb-3">
-                            Penerbit: {{ $item->penerbit }}
-                        </small>
-
-                        <div class="mt-auto">
-
-                            {{-- STOK --}}
-                            @if($item->stok > 0)
-                            <div class="stok-badge tersedia">
-                                Stok: {{ $item->stok }}
-                            </div>
-                            @else
-                            <div class="stok-badge habis">
-                                Stok Habis
-                            </div>
-                            @endif
-
-                            {{-- BUTTON --}}
-                            @if(!auth()->user()->anggota)
-                            <a href="/daftar-anggota"
-                                class="btn btn-warning w-100 btn-action">
-                                🔒 Daftar Sebagai Anggota
-                            </a>
-                            @else
-                            <form action="{{ route('pinjam.store', $item->id) }}" method="POST">
-                                @csrf
-                                <button type="submit"
-                                    class="btn btn-light w-100 btn-action"
-                                    {{ $item->stok == 0 ? 'disabled' : '' }}>
-                                    Pinjam Buku
-                                </button>
-                            </form>
-                            @endif
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            @empty
-            <div class="text-center text-light">
-                Belum ada buku tersedia 📭
-            </div>
-            @endforelse
+            @include('buku.gridkatalog')
 
         </div>
     </div>
 </div>
 
-{{-- AOS JS --}}
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* ================= AOS ================= */
+
     AOS.init({
-        duration: 900,
-        once: true
+        duration: 500,
+        once: true,
+        offset: 120
     });
+
+
+    /* ================= LAYOUT ================= */
+
+    const grid = document.getElementById("bukuGrid");
+    const buttons = document.querySelectorAll(".layout-btn");
+
+    function applyLayout(layout){
+
+        const items = document.querySelectorAll(".buku-item");
+
+        items.forEach(item => {
+
+            item.classList.remove("col-12","col-6");
+
+            if(layout === "list"){
+                item.classList.add("col-12");
+            }
+
+            if(layout === "grid2"){
+                item.classList.add("col-6");
+            }
+
+        });
+
+    }
+
+    function setActiveButton(layout){
+
+        buttons.forEach(btn => {
+
+            btn.classList.remove("active");
+
+            if(btn.dataset.layout === layout){
+                btn.classList.add("active");
+            }
+
+        });
+
+    }
+
+    function initLayout(){
+
+        let savedLayout = localStorage.getItem("layoutMode") || "list";
+
+        applyLayout(savedLayout);
+        setActiveButton(savedLayout);
+
+        buttons.forEach(btn => {
+
+            btn.onclick = function(){
+
+                let layout = this.dataset.layout;
+
+                applyLayout(layout);
+                setActiveButton(layout);
+
+                localStorage.setItem("layoutMode", layout);
+
+            };
+
+        });
+
+    }
+
+    initLayout();
+
+
+    /* ================= LIVE SEARCH ================= */
+
+    const searchInput = document.getElementById("search");
+
+    let timeout = null;
+
+    searchInput.addEventListener("keyup", function(){
+
+        clearTimeout(timeout);
+
+        let query = this.value;
+
+        timeout = setTimeout(() => {
+
+            fetch(`/buku?search=${query}`,{
+                headers:{
+                    "X-Requested-With":"XMLHttpRequest"
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+
+                grid.innerHTML = html;
+
+                /* aktifkan ulang layout setelah grid diganti */
+                initLayout();
+
+                /* refresh animasi AOS */
+                AOS.refresh();
+
+            });
+
+        },300);
+
+    });
+
+});
 </script>
 
-{{-- ================== CUSTOM STYLE ================== --}}
-<style>
+{{-- ================= STYLE ================= --}}
 
-    /* Background Section */
+<style>
+    #bukuGrid .buku-item {
+        transition: all .25s ease;
+    }
+
     .katalog-wrapper {
         background: linear-gradient(135deg, #1e3c72, #2a5298);
         min-height: 100vh;
@@ -120,27 +186,29 @@
 
     .katalog-title {
         color: #fff;
-        font-size: 2rem;
+        font-size: 20px;
         letter-spacing: 1px;
     }
 
-    /* CARD STYLE */
+    /* CARD */
+
     .katalog-card {
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(15px);
         border-radius: 20px;
         overflow: hidden;
         transition: all .4s ease;
-        box-shadow: 0 10px 25px rgba(0,0,0,.25);
-        border: 1px solid rgba(255,255,255,0.15);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+        border: 1px solid rgba(255, 255, 255, .15);
     }
 
     .katalog-card:hover {
         transform: translateY(-10px) scale(1.03);
-        box-shadow: 0 25px 50px rgba(0,0,0,.4);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, .4);
     }
 
     /* IMAGE */
+
     .katalog-img-wrapper {
         position: relative;
         overflow: hidden;
@@ -157,12 +225,13 @@
         transform: scale(1.15) rotate(1deg);
     }
 
-    /* YEAR BADGE */
+    /* BADGE */
+
     .year-badge {
         position: absolute;
         top: 15px;
         right: 15px;
-        background: rgba(0,0,0,0.7);
+        background: rgba(0, 0, 0, 0.7);
         padding: 6px 12px;
         border-radius: 30px;
         color: #fff;
@@ -179,6 +248,7 @@
     }
 
     /* BODY */
+
     .katalog-body {
         padding: 20px;
         color: white;
@@ -190,6 +260,7 @@
     }
 
     /* STOK */
+
     .stok-badge {
         padding: 6px 12px;
         border-radius: 30px;
@@ -199,16 +270,17 @@
     }
 
     .tersedia {
-        background: rgba(0,255,150,.2);
+        background: rgba(0, 255, 150, .2);
         color: #00ffae;
     }
 
     .habis {
-        background: rgba(255,0,0,.2);
+        background: rgba(255, 0, 0, .2);
         color: #ff5c5c;
     }
 
     /* BUTTON */
+
     .btn-action {
         border-radius: 30px;
         font-weight: 600;
@@ -217,16 +289,13 @@
 
     .btn-action:hover {
         transform: scale(1.05);
-        box-shadow: 0 10px 20px rgba(0,0,0,.3);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, .3);
     }
 
-    /* RESPONSIVE */
-    @media(max-width:768px){
-        .katalog-img {
-            height: 200px;
-        }
+    .layout-btn.active {
+        background: #0d6efd;
+        color: white;
     }
-
 </style>
 
 @endsection

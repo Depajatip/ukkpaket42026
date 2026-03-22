@@ -16,16 +16,13 @@ class Anggota extends Model
         'tanggal_daftar',
         'status_anggota'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-
-public function user()
-{
-    return $this->belongsTo(User::class);
-}
-
-public function transaksi()
-{
-    return $this->hasMany(Transaksi::class);
-}
-
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 }

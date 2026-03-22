@@ -7,6 +7,10 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Admin\BukuController;
 use App\Http\Controllers\Admin\TransaksiController as AdminTransaksiController;
+use App\Http\Controllers\Admin\DashboardAdmin;
+use App\Http\Controllers\Admin\ManageAnggotaController;
+use App\Http\Controllers\Admin\ManageMuridController;
+use App\Http\Controllers\Admin\HistoryTransaksiController;
 use App\Http\Controllers\BukuSiswaController;
 use App\Http\Controllers\ListPinjamanController;
 
@@ -16,9 +20,8 @@ use App\Http\Controllers\ListPinjamanController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AnggotaController::class, 'welcomePage'])
+    ->name('welcome');
 
 /*
 |--------------------------------------------------------------------------
@@ -31,11 +34,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         return view('user.dashboard');
     })->name('user.dashboard');
 
-    Route::get('/buku', [BukuSiswaController::class, 'index'])
-        ->name('buku.index');
-
-    Route::post('/pinjam/{buku}', [PeminjamanController::class, 'store'])
-        ->name('pinjam.store');
+    Route::get('/dashboard', [AnggotaController::class, 'dashboard'])
+        ->name('user.dashboard');
 
     Route::get('/daftar-anggota', [AnggotaController::class, 'create'])
         ->name('anggota.create');
@@ -43,19 +43,25 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/daftar-anggota', [AnggotaController::class, 'store'])
         ->name('anggota.store');
 
-    Route::get('/siswa/peminjaman-aktif', [ListPinjamanController::class, 'aktif'])
-        ->name('siswa.peminjaman.aktif');
+    Route::get('/buku', [BukuSiswaController::class, 'index'])
+        ->name('buku.index');
 
-    Route::post(
-        '/pengembalian/{transaksi}',
-        [PeminjamanController::class, 'ajukanPengembalian']
-    )->name('pengembalian.ajukan');
+    Route::get('/search-buku', [BukuSiswaController::class, 'search']);
 
-    Route::get('/siswa/adminHistory', [AdminTransaksiController::class,'history'])
-    ->name('siswa.adminHistory');
+    Route::post('/pinjam/{buku}', [PeminjamanController::class, 'store'])
+        ->name('pinjam.store');
+
+    Route::post('/pengembalian/{transaksi}', [PeminjamanController::class, 'ajukanPengembalian'])
+        ->name('pengembalian.ajukan');
 
     Route::get('/siswa/history', [PeminjamanController::class, 'historyPinjaman'])
-    ->name('siswa.history');
+        ->name('siswa.history');
+
+    Route::get('/siswa/peminjaman-aktif', [ListPinjamanController::class, 'index'])
+        ->name('siswa.peminjaman');
+
+    Route::get('/siswa/adminHistory', [AdminTransaksiController::class, 'history'])
+        ->name('siswa.adminHistory');
 });
 
 /*
@@ -68,11 +74,38 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [DashboardAdmin::class, 'index'])
+            ->name('dashboard');
 
-        Route::resource('buku', BukuController::class);
+        Route::get('/buku', [BukuController::class, 'index'])
+            ->name('buku.index');
+
+        Route::get('/buku/create', [BukuController::class, 'create'])
+            ->name('buku.create');
+
+        Route::post('/buku', [BukuController::class, 'store'])
+            ->name('buku.store');
+
+        Route::get('/buku/{buku}/edit', [BukuController::class, 'edit'])
+            ->name('buku.edit');
+
+        Route::put('/buku/{buku}', [BukuController::class, 'update'])
+            ->name('buku.update');
+
+        Route::delete('/buku/{buku}', [BukuController::class, 'destroy'])
+            ->name('buku.destroy');
+
+        Route::post('/admin/murid/store', [ManageMuridController::class, 'store'])
+            ->name('murid.store');
+
+        Route::delete('/murid/{id}', [ManageMuridController::class, 'destroy'])
+            ->name('murid.destroy');
+
+        Route::put('/admin/murid/{murid}', [ManageMuridController::class, 'update'])
+            ->name('murid.update');
+
+        Route::get('/list-murid', [ManageMuridController::class, 'index'])
+            ->name('managemurid.index');
 
         Route::get('/transaksi', [AdminTransaksiController::class, 'index'])
             ->name('transaksi.index');
@@ -82,10 +115,28 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::post('/transaksi/{transaksi}/reject', [AdminTransaksiController::class, 'reject'])
             ->name('transaksi.reject');
+
         Route::post('/transaksi/{transaksi}/return', [AdminTransaksiController::class, 'return'])
             ->name('transaksi.return');
-    });
 
+        Route::get('/manage-anggota', [ManageAnggotaController::class, 'index'])
+            ->name('manageanggota.index');
+
+        Route::delete('/anggota/{id}', [ManageAnggotaController::class, 'destroy'])
+            ->name('anggota.destroy');
+
+        Route::put('/anggota/{id}', [ManageAnggotaController::class, 'update'])
+            ->name('anggota.update');
+
+        Route::get('/admin-daftar-anggota', [ManageAnggotaController::class, 'create'])
+            ->name('anggota.create');
+
+        Route::post('/admin-daftar-anggota', [AnggotaController::class, 'store'])
+            ->name('anggota.store');
+
+        Route::get('/admin-transaksi/history', [HistoryTransaksiController::class, 'history'])
+            ->name('historytransaksi');
+    });
 /*
 |--------------------------------------------------------------------------
 | LOGIN ADMIN
