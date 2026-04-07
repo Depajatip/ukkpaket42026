@@ -82,7 +82,7 @@
         <div class="container">
 
             <a class="navbar-brand fw-bold brand-hover" href="/dashboard">
-                📚 Perpustakaan
+                📚 {{ config('app.name', 'LenteraMu') }}
             </a>
 
             <button class="navbar-toggler" type="button"
@@ -199,8 +199,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
-                text: '{{ session('
-                success ') }}',
+                text: "{{ session('success') }}",
                 confirmButtonText: 'OK'
             });
 
@@ -221,8 +220,7 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Gagal',
-                text: '{{ session('
-                error ') }}',
+                text: "{{ session('error') }}",
                 confirmButtonText: 'OK'
             });
 

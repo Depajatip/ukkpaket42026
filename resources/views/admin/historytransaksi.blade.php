@@ -56,7 +56,7 @@
     <div class="d-flex justify-content-between mb-4">
         <form action="{{ route('admin.historytransaksi') }}" method="GET" class="d-flex flex-grow-1 me-2">
             <input type="text" name="search" class="form-control me-2"
-                placeholder="Cari ID, NIS, Nama, atau Buku..." value="{{ request('search') }}">
+                placeholder="Cari..." value="{{ request('search') }}">
             <button type="submit" class="btn btn-secondary px-4">Cari</button>
 
             @if(request('search'))
@@ -85,14 +85,14 @@
                             </th>
 
                             <th>
-                                <a href="{{ route('admin.historytransaksi', array_merge(request()->query(), ['sort' => 'nis', 'order' => request('order') == 'asc' ? 'desc' : 'asc'])) }}" class="text-dark text-decoration-none">
-                                    NIS <i class="fas fa-sort{{ request('sort') == 'nis' ? (request('order') == 'asc' ? '-up' : '-down') : '' }} ms-1"></i>
+                                <a href="{{ route('admin.historytransaksi', array_merge(request()->query(), ['sort' => 'nama', 'order' => request('order') == 'asc' ? 'desc' : 'asc'])) }}" class="text-dark text-decoration-none">
+                                    Nama <i class="fas fa-sort{{ request('sort') == 'nama' ? (request('order') == 'asc' ? '-up' : '-down') : '' }} ms-1"></i>
                                 </a>
                             </th>
 
                             <th>
-                                <a href="{{ route('admin.historytransaksi', array_merge(request()->query(), ['sort' => 'nama', 'order' => request('order') == 'asc' ? 'desc' : 'asc'])) }}" class="text-dark text-decoration-none">
-                                    Nama <i class="fas fa-sort{{ request('sort') == 'nama' ? (request('order') == 'asc' ? '-up' : '-down') : '' }} ms-1"></i>
+                                <a href="{{ route('admin.historytransaksi', array_merge(request()->query(), ['sort' => 'nis', 'order' => request('order') == 'asc' ? 'desc' : 'asc'])) }}" class="text-dark text-decoration-none">
+                                    NIS <i class="fas fa-sort{{ request('sort') == 'nis' ? (request('order') == 'asc' ? '-up' : '-down') : '' }} ms-1"></i>
                                 </a>
                             </th>
 

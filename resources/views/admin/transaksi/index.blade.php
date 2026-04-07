@@ -15,8 +15,9 @@
         <table class="table align-middle">
             <thead class="table-light">
                 <tr>
-                    <th>NIS</th>
+                    <th>No</th>
                     <th>Nama</th>
+                    <th>NIS</th>
                     <th>Buku</th>
                     <th>Tanggal Pinjam</th>
                     <th>ID transaksi</th>
@@ -27,8 +28,9 @@
             <tbody>
                 @forelse($transaksi as $t)
                 <tr>
-                    <td>{{ $t->anggota->user->nis }}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $t->anggota->user->nama_siswa }}</td>
+                    <td>{{ $t->anggota->user->nis }}</td>
                     <td>{{ $t->buku->judul_buku }}</td>
                     <td>{{ $t->tanggal_pinjam}}</td>
                     <td>#{{ $t->id }}</td>

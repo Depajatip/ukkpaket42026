@@ -23,8 +23,8 @@
             <thead class="table-light">
                 <tr>
                     <th>No</th>
-                    <th>NIS</th>
                     <th>Nama</th>
+                    <th>NIS</th>
                     <th>Kelas</th>
                     <th>Status Anggota</th>
                     <th>Aksi</th>
@@ -37,8 +37,8 @@
 
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $murid->nis }}</td>
                     <td>{{ $murid->nama_siswa }}</td>
+                    <td>{{ $murid->nis }}</td>
                     <td>{{ $murid->kelas }}</td>
 
                     <td>
@@ -102,20 +102,20 @@
                 <div class="modal-body">
 
                     <div class="mb-3">
-                        <label>NIS</label>
-                        <input type="text"
-                            name="nis"
-                            class="form-control"
-                            value="{{ $murid->nis }}"
-                            required>
-                    </div>
-
-                    <div class="mb-3">
                         <label>Nama</label>
                         <input type="text"
                             name="nama_siswa"
                             class="form-control"
                             value="{{ $murid->nama_siswa }}"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>NIS</label>
+                        <input type="text"
+                            name="nis"
+                            class="form-control"
+                            value="{{ $murid->nis }}"
                             required>
                     </div>
 
